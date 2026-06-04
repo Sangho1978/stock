@@ -137,15 +137,26 @@
   import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js';
 
   // 1) Firebase 콘솔에서 받은 값을 입력하세요.
-  const firebaseConfig = {
-    apiKey: 'YOUR_FIREBASE_API_KEY',
-    authDomain: 'YOUR_PROJECT.firebaseapp.com',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT.appspot.com',
-    messagingSenderId: 'YOUR_SENDER_ID',
-    appId: 'YOUR_APP_ID'
-  };
+  // const firebaseConfig = {
+  //   apiKey: 'YOUR_FIREBASE_API_KEY',
+  //   authDomain: 'YOUR_PROJECT.firebaseapp.com',
+  //   projectId: 'YOUR_PROJECT_ID',
+  //   storageBucket: 'YOUR_PROJECT.appspot.com',
+  //   messagingSenderId: 'YOUR_SENDER_ID',
+  //   appId: 'YOUR_APP_ID'
+  // };
 
+
+  const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCsyu_2FFLIPJE76pSiEoR0Uua9JMSB-ng",
+  authDomain: "snu17-trip-vote.firebaseapp.com",
+  databaseURL: "https://snu17-trip-vote-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "snu17-trip-vote",
+  storageBucket: "snu17-trip-vote.firebasestorage.app",
+  messagingSenderId: "1043680927852",
+  appId: "1:1043680927852:web:98b6916873cda945d63849",
+  measurementId: "G-MTF99DNV7M"
+};
   // 2) Cloud Functions 또는 별도 서버 API 예시
   // GET {apiBase}/search?q=삼성전자  => [{symbol,name,market,type,currency}]
   // GET {apiBase}/quote?symbol=005930.KS&start=2026-06-01&end=2026-06-30
