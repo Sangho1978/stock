@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Money Plus 주식투자 리그</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#141b2d; --card2:#1b2438; --line:#2a3550;
+      --text:#edf2ff; --muted:#9aa7c2; --accent:#7dd3fc; --good:#4ade80;
+      --bad:#fb7185; --warn:#fbbf24; --white:#fff;
+      --shadow: 0 14px 40px rgba(0,0,0,.28); --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top left,#172554 0,#0b1020 34%,#050816 100%);color:var(--text)}
+    a{color:inherit}
+    button,input,select,textarea{font:inherit}
+    button{border:0;cursor:pointer;border-radius:12px;padding:10px 14px;background:#334155;color:var(--text);font-weight:700}
+    button.primary{background:linear-gradient(135deg,#38bdf8,#6366f1);color:#fff}
+    button.good{background:#166534} button.danger{background:#9f1239} button.ghost{background:transparent;border:1px solid var(--line)}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    input,select,textarea{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:#0f172a;color:var(--text);outline:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+    .wrap{max-width:1180px;margin:0 auto;padding:18px}
+    .top{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:10px 0 18px}
+    .brand{display:flex;gap:12px;align-items:center}.logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#fde68a,#fb7185);font-size:25px;box-shadow:var(--shadow)}
+    .brand h1{font-size:22px;line-height:1.1;margin:0}.brand p{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .chip{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);background:rgba(20,27,45,.72);border-radius:999px;padding:8px 10px;color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}.card{background:rgba(20,27,45,.92);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}.card h2{font-size:17px;margin:0 0 12px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.hide{display:none!important}.muted{color:var(--muted)}.small{font-size:12px}.right{text-align:right}.center{text-align:center}.mt{margin-top:12px}.mb{margin-bottom:12px}.flex{display:flex;gap:10px;align-items:center}.between{display:flex;justify-content:space-between;gap:10px;align-items:center}.badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:4px 8px;font-size:12px;background:#22304d;color:#c7d2fe}.badge.good{background:rgba(34,197,94,.14);color:#86efac}.badge.bad{background:rgba(244,63,94,.14);color:#fda4af}.badge.warn{background:rgba(251,191,36,.14);color:#fde68a}
+    table{width:100%;border-collapse:collapse;overflow:hidden} th,td{padding:11px 9px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:14px} th{text-align:left;color:#cbd5e1;font-size:12px;background:rgba(15,23,42,.7);position:sticky;top:0} tr:hover td{background:rgba(51,65,85,.16)}
+    .rank{font-size:22px;min-width:42px;display:inline-block}.pos{color:var(--good);font-weight:800}.neg{color:var(--bad);font-weight:800}.zero{color:#cbd5e1;font-weight:800}.price{font-variant-numeric:tabular-nums}.ticker{font-weight:800}.nameCell{min-width:160px}.avatar{width:32px;height:32px;border-radius:10px;background:#334155;display:inline-grid;place-items:center;margin-right:8px;font-weight:900;color:#c7d2fe}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tab{padding:9px 12px;border-radius:999px;background:#111827;border:1px solid var(--line);color:var(--muted)}.tab.active{background:#2563eb;color:#fff;border-color:#60a5fa}.toast{position:fixed;right:18px;bottom:18px;background:#020617;color:white;border:1px solid #334155;border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);max-width:340px;z-index:50}.modalBack{position:fixed;inset:0;background:rgba(0,0,0,.65);display:grid;place-items:center;z-index:40;padding:16px}.modal{width:min(520px,100%);background:#111827;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow)}.shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}.shot{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0f172a}.shot img{width:100%;height:190px;object-fit:cover;display:block}.shot div{padding:9px}.searchResults{position:absolute;z-index:20;background:#0f172a;border:1px solid var(--line);border-radius:14px;max-height:240px;overflow:auto;width:100%;box-shadow:var(--shadow)}.searchResults button{display:block;width:100%;text-align:left;background:transparent;border-radius:0;border-bottom:1px solid var(--line);font-weight:500}.relative{position:relative}.adminOnly{display:none}.isAdmin .adminOnly{display:initial}.isAdmin tr.adminOnly{display:table-row}.empty{border:1px dashed var(--line);border-radius:16px;padding:22px;text-align:center;color:var(--muted)}
+    @media(max-width:860px){.grid{grid-template-columns:1fr}.row,.row3{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.wideTable{overflow:auto}.wideTable table{min-width:980px}.brand h1{font-size:20px}}
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <header class="top">
+      <div class="brand">
+        <div class="logo">💰</div>
+        <div><h1>Money Plus 주식투자 리그</h1><p>회원별 추천 종목·ETF 기간 누적 수익률 랭킹</p></div>
+      </div>
+      <div class="flex" id="loginBox">
+        <span class="chip" id="loginState">로그인 필요</span>
+        <button class="primary" id="openLoginBtn">로그인</button>
+        <button class="ghost hide" id="logoutBtn">로그아웃</button>
+      </div>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <div class="between mb">
+          <h2>🏆 실시간 순위</h2>
+          <div class="tabs">
+            <button class="tab active" data-tab="rank">순위</button>
+            <button class="tab" data-tab="submit">내 종목 등록</button>
+            <button class="tab" data-tab="shots">인증샷</button>
+            <button class="tab adminOnly" data-tab="admin">관리자</button>
+          </div>
+        </div>
+        <div class="between mb">
+          <div>
+            <span class="badge" id="periodBadge">기간 미설정</span>
+            <span class="badge warn" id="lockBadge">진행 전</span>
+          </div>
+          <button class="ghost" id="refreshBtn">가격 새로고침</button>
+        </div>
+        <div class="small muted mb" id="dataTime">데이터 수집 전</div>
+
+        <div id="rankView">
+          <div class="wideTable">
+            <table>
+              <thead><tr><th>순위</th><th>회원</th><th>종목/ETF</th><th>시작 시초가</th><th>현재/종료가</th><th>기간 수익률</th><th>전일종가 대비</th><th>데이터 시각</th><th class="adminOnly">관리</th></tr></thead>
+              <tbody id="rankBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="submitView" class="hide">
+          <h2>📌 내 추천 종목/ETF 등록</h2>
+          <p class="muted small">회원 1명당 1개 종목 또는 ETF만 등록됩니다. 투자 기간이 종료되면 수익률과 순위가 고정됩니다.</p>
+          <div class="row">
+            <div class="relative"><label class="small muted">종목/ETF 검색</label><input id="symbolSearch" placeholder="예: 삼성전자, KODEX 200, AAPL, SPY" autocomplete="off"/><div id="searchResults" class="searchResults hide"></div></div>
+            <div><label class="small muted">선택된 종목</label><input id="selectedSymbol" readonly placeholder="검색 결과를 선택하세요"/></div>
+          </div>
+          <div class="row mt">
+            <div><label class="small muted">투자 의견/메모</label><textarea id="memo" rows="3" placeholder="선택 이유를 간단히 입력"></textarea></div>
+            <div><label class="small muted">수익률 인증샷 업로드</label><input id="shotFile" type="file" accept="image/*"/><p class="small muted">증권앱 캡처 등을 등록할 수 있습니다.</p></div>
+          </div>
+          <div class="mt flex"><button class="primary" id="savePickBtn">종목 저장</button><button class="ghost" id="uploadShotBtn">인증샷만 업로드</button></div>
+        </div>
+
+        <div id="shotsView" class="hide">
+          <h2>🖼️ 회원별 수익률 인증샷</h2>
+          <div id="shotsList" class="shots"></div>
+        </div>
+
+        <div id="adminView" class="hide">
+          <h2>⚙️ 관리자 기능</h2>
+          <div class="row3">
+            <div><label class="small muted">투자 시작일</label><input id="startDate" type="date"/></div>
+            <div><label class="small muted">투자 종료일</label><input id="endDate" type="date"/></div>
+            <div><label class="small muted">시장</label><select id="marketMode"><option value="KR_US">한국+미국</option><option value="KR">한국</option><option value="US">미국</option></select></div>
+          </div>
+          <div class="row mt">
+            <div><label class="small muted">리그 제목</label><input id="leagueTitle" placeholder="Money Plus 1차 리그"/></div>
+            <div><label class="small muted">가격 API 주소</label><input id="apiBase" placeholder="예: https://asia-northeast3-프로젝트.cloudfunctions.net/marketApi"/></div>
+          </div>
+          <div class="mt flex"><button class="primary" id="saveSettingsBtn">기간/설정 저장</button><button class="good" id="initMembersBtn">회원 초기 생성</button><button class="danger" id="freezeBtn">종료 순위 고정</button></div>
+          <p class="small muted">관리자: 한상호 / 초기 PIN 4572. 나머지 회원 초기 PIN 0000. 첫 로그인 시 PIN 4자리 변경을 요구합니다.</p>
+          <div class="wideTable mt"><table><thead><tr><th>회원</th><th>권한</th><th>PIN 초기화</th></tr></thead><tbody id="memberAdminBody"></tbody></table></div>
+        </div>
+      </div>
+
+      <aside class="card">
+        <h2>📊 리그 요약</h2>
+        <div id="summaryBox" class="empty">데이터가 없습니다.</div>
+        <hr style="border-color:var(--line);border-width:0 0 1px;margin:16px 0">
+        <h2>👥 회원</h2>
+        <div id="memberList"></div>
+      </aside>
+    </section>
+  </div>
+
+  <div class="modalBack" id="loginModal">
+    <div class="modal">
+      <h2>Money Plus 로그인</h2>
+      <p class="muted small">이름을 선택하고 4자리 PIN을 입력하세요.</p>
+      <div class="row"><div><label class="small muted">회원</label><select id="loginMember"></select></div><div><label class="small muted">PIN</label><input id="pin" inputmode="numeric" maxlength="4" type="password" placeholder="0000"/></div></div>
+      <div class="mt hide" id="pinChangeBox"><label class="small muted">새 PIN 4자리</label><input id="newPin" inputmode="numeric" maxlength="4" type="password" placeholder="새 PIN"/><p class="small muted">초기 PIN으로 로그인한 경우 반드시 변경해야 합니다.</p></div>
+      <div class="mt flex"><button class="primary" id="loginBtn">로그인</button><button class="ghost" id="closeLoginBtn">닫기</button></div>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, onSnapshot, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+  import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js';
+
+  // 1) Firebase 콘솔에서 받은 값을 입력하세요.
+  const firebaseConfig = {
+    apiKey: 'YOUR_FIREBASE_API_KEY',
+    authDomain: 'YOUR_PROJECT.firebaseapp.com',
+    projectId: 'YOUR_PROJECT_ID',
+    storageBucket: 'YOUR_PROJECT.appspot.com',
+    messagingSenderId: 'YOUR_SENDER_ID',
+    appId: 'YOUR_APP_ID'
+  };
+
+  // 2) Cloud Functions 또는 별도 서버 API 예시
+  // GET {apiBase}/search?q=삼성전자  => [{symbol,name,market,type,currency}]
+  // GET {apiBase}/quote?symbol=005930.KS&start=2026-06-01&end=2026-06-30
+  // => {symbol,name,currency,startOpen,currentPrice,finalClose,prevClose,regularMarketTime,fetchedAt}
+
+  const MEMBERS = [
+    ['한상호',''], ['곽영은','한국부동산원'], ['김수정','한국소비자원'], ['김태균','농협중앙회'],
+    ['김해영','한국농어촌공사'], ['김현교','국립공원공단'], ['류준호','한국전력공사'], ['문철웅','한국전력공사'],
+    ['박상환','한국인터넷진흥원'], ['변태윤','국가철도공단'], ['김윤정','서울대'], ['신명진','한국서부발전'],
+    ['윤선아','강원랜드'], ['이승민','농협중앙회'], ['이주훈','한국산업기술기획평가원'], ['정장식','한국환경공단'],
+    ['정형모','한국농어촌공사'], ['최미숙','한국철도공사']
+  ];
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  const $ = id => document.getElementById(id);
+  const state = { user:null, members:[], picks:[], settings:{}, shots:[], selected:null, tab:'rank' };
+
+  const toast = msg => { const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3200); };
+  const validPin = v => /^\d{4}$/.test(v||'');
+  const money = (v,c='') => v==null||Number.isNaN(+v) ? '-' : `${Number(v).toLocaleString(undefined,{maximumFractionDigits:2})}${c?` ${c}`:''}`;
+  const pct = v => v==null||Number.isNaN(+v) ? '-' : `${v>=0?'+':''}${Number(v).toFixed(2)}%`;
+  const pctClass = v => v>0?'pos':v<0?'neg':'zero';
+  const nowIso = () => new Date().toISOString();
+  const hashPin = async pin => {
+    const data = new TextEncoder().encode(String(pin));
+    const digest = await crypto.subtle.digest('SHA-256', data);
+    return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  };
+  const isEnded = () => state.settings.endDate && new Date() > new Date(state.settings.endDate + 'T23:59:59');
+  const isStarted = () => state.settings.startDate && new Date() >= new Date(state.settings.startDate + 'T00:00:00');
+  const leagueLocked = () => state.settings.isFrozen || isEnded();
+
+  function rankEmoji(rank, total){
+    if(rank===1) return '👑🥇'; if(rank===2) return '🥈'; if(rank===3) return '🥉';
+    if(rank <= Math.ceil(total*0.35)) return '🚀'; if(rank <= Math.ceil(total*0.7)) return '🙂'; return '🥶';
+  }
+
+  async function initMembers(){
+    for(const [name,org] of MEMBERS){
+      const id = name + (org?`_${org}`:'');
+      const isAdmin = name === '한상호';
+      await setDoc(doc(db,'members',id), {
+        id,name,org,role:isAdmin?'admin':'member', pinHash: await hashPin(isAdmin?'4572':'0000'), mustChangePin:true,
+        createdAt:serverTimestamp()
+      }, {merge:true});
+    }
+    toast('회원 초기 생성 완료');
+  }
+
+  async function loadOnce(){
+    onSnapshot(query(collection(db,'members'), orderBy('name')), snap=>{ state.members=snap.docs.map(d=>d.data()); renderMembers(); renderLoginMembers(); });
+    onSnapshot(collection(db,'picks'), snap=>{ state.picks=snap.docs.map(d=>({id:d.id,...d.data()})); renderAll(); });
+    onSnapshot(collection(db,'shots'), snap=>{ state.shots=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)); renderShots(); });
+    onSnapshot(doc(db,'settings','league'), snap=>{ state.settings=snap.exists()?snap.data():{}; renderAll(); });
+  }
+
+  function renderLoginMembers(){
+    $('loginMember').innerHTML = state.members.map(m=>`<option value="${m.id}">${m.name}${m.org?' · '+m.org:''}</option>`).join('');
+  }
+  function renderMembers(){
+    $('memberList').innerHTML = state.members.map(m=>`<div class="between" style="padding:8px 0;border-bottom:1px solid var(--line)"><span><span class="avatar">${m.name[0]}</span>${m.name}<span class="muted small"> ${m.org||''}</span></span><span class="badge ${m.role==='admin'?'warn':''}">${m.role==='admin'?'관리자':'회원'}</span></div>`).join('');
+    $('memberAdminBody').innerHTML = state.members.map(m=>`<tr><td>${m.name} <span class="muted small">${m.org||''}</span></td><td>${m.role==='admin'?'관리자':'회원'}</td><td><button class="ghost" data-reset-pin="${m.id}">0000으로 초기화</button></td></tr>`).join('');
+  }
+  function renderAll(){
+    renderBadges(); renderRank(); renderSummary(); renderAdminFields();
+  }
+  function renderBadges(){
+    const s=state.settings;
+    $('periodBadge').textContent = s.startDate&&s.endDate ? `${s.startDate} 시초가 ~ ${s.endDate} 종가` : '기간 미설정';
+    $('lockBadge').textContent = s.isFrozen ? '순위 고정' : isEnded() ? '기간 종료' : isStarted() ? '진행 중' : '진행 전';
+    $('lockBadge').className = `badge ${s.isFrozen||isEnded()?'bad':isStarted()?'good':'warn'}`;
+    $('dataTime').textContent = s.lastFetchedAt ? `마지막 가격 데이터 수집: ${new Date(s.lastFetchedAt).toLocaleString()}` : '데이터 수집 전';
+    if(s.title) document.querySelector('.brand h1').textContent = s.title;
+  }
+  function calcReturn(p){
+    const endPrice = state.settings.isFrozen && p.frozenPrice ? p.frozenPrice : (isEnded() && p.finalClose ? p.finalClose : p.currentPrice);
+    if(!p.startOpen || !endPrice) return null;
+    return ((endPrice - p.startOpen) / p.startOpen) * 100;
+  }
+  function calcDay(p){ if(!p.prevClose || !p.currentPrice) return null; return ((p.currentPrice-p.prevClose)/p.prevClose)*100; }
+  function sortedPicks(){ return [...state.picks].map(p=>({...p,returnPct:calcReturn(p),dayPct:calcDay(p)})).sort((a,b)=>(b.returnPct??-999999)-(a.returnPct??-999999)); }
+  function renderRank(){
+    const rows = sortedPicks();
+    if(!rows.length){ $('rankBody').innerHTML = '<tr><td colspan="9" class="center muted">등록된 종목이 없습니다.</td></tr>'; return; }
+    $('rankBody').innerHTML = rows.map((p,i)=>{
+      const member = state.members.find(m=>m.id===p.memberId) || {};
+      const rank=i+1; const isFinal = state.settings.isFrozen || isEnded(); const endPrice = isFinal && p.finalClose ? p.finalClose : p.currentPrice;
+      return `<tr><td><span class="rank">${rankEmoji(rank,rows.length)}</span><b>${rank}</b></td><td class="nameCell"><span class="avatar">${(member.name||'?')[0]}</span>${member.name||p.memberName}<div class="muted small">${member.org||''}</div></td><td><div class="ticker">${p.symbol||'-'} <span class="badge">${p.type||'STOCK/ETF'}</span></div><div class="muted small">${p.symbolName||''}</div></td><td class="price">${money(p.startOpen,p.currency)}</td><td class="price">${money(endPrice,p.currency)}<div class="muted small">${isFinal?'종료 기준':'현재 기준'}</div></td><td class="${pctClass(p.returnPct)}">${pct(p.returnPct)}</td><td class="${pctClass(p.dayPct)}">${pct(p.dayPct)}<div class="muted small">전일 종가 ${money(p.prevClose,p.currency)}</div></td><td class="small muted">${p.fetchedAt?new Date(p.fetchedAt).toLocaleString():'-'}</td><td class="adminOnly"><button class="ghost" data-refresh-one="${p.id}">갱신</button></td></tr>`;
+    }).join('');
+  }
+  function renderSummary(){
+    const rows=sortedPicks();
+    if(!rows.length){ $('summaryBox').className='empty'; $('summaryBox').textContent='데이터가 없습니다.'; return; }
+    const top=rows[0], bottom=rows[rows.length-1];
+    $('summaryBox').className='';
+    $('summaryBox').innerHTML=`<div class="between"><span>1위</span><b>${top.memberName||''} · ${top.symbol||''}</b></div><div class="right ${pctClass(top.returnPct)}" style="font-size:28px">${pct(top.returnPct)}</div><div class="between mt"><span>현재 꼴찌</span><b>${bottom.memberName||''} · ${bottom.symbol||''}</b></div><div class="right ${pctClass(bottom.returnPct)}" style="font-size:22px">${pct(bottom.returnPct)}</div><p class="small muted">총 등록 ${rows.length}명 / 전체 회원 ${state.members.length}명</p>`;
+  }
+  function renderAdminFields(){
+    $('startDate').value=state.settings.startDate||''; $('endDate').value=state.settings.endDate||''; $('leagueTitle').value=state.settings.title||''; $('apiBase').value=state.settings.apiBase||''; $('marketMode').value=state.settings.marketMode||'KR_US';
+  }
+  function renderShots(){
+    if(!state.shots.length){ $('shotsList').innerHTML='<div class="empty">등록된 인증샷이 없습니다.</div>'; return; }
+    $('shotsList').innerHTML=state.shots.map(s=>`<div class="shot"><img src="${s.url}" alt="인증샷"><div><b>${s.memberName}</b><div class="small muted">${s.symbol||''} · ${s.createdAt?.seconds?new Date(s.createdAt.seconds*1000).toLocaleString():''}</div></div></div>`).join('');
+  }
+  function setTab(tab){ state.tab=tab; document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab)); ['rank','submit','shots','admin'].forEach(t=>$(t+'View').classList.toggle('hide',t!==tab)); }
+  function updateAuthUi(){
+    const admin = state.user?.role==='admin'; document.body.classList.toggle('isAdmin',admin);
+    $('loginState').textContent = state.user ? `${state.user.name} 로그인${admin?' · 관리자':''}` : '로그인 필요';
+    $('openLoginBtn').classList.toggle('hide',!!state.user); $('logoutBtn').classList.toggle('hide',!state.user);
+    document.querySelectorAll('.adminOnly').forEach(el=>el.style.display=admin?'':'none');
+  }
+
+  async function login(){
+    const id=$('loginMember').value, pin=$('pin').value, newPin=$('newPin').value;
+    if(!validPin(pin)) return toast('PIN은 숫자 4자리입니다.');
+    const snap=await getDoc(doc(db,'members',id)); if(!snap.exists()) return toast('회원이 없습니다. 관리자가 회원 초기 생성을 먼저 해주세요.');
+    const m=snap.data(); if(await hashPin(pin)!==m.pinHash) return toast('PIN이 맞지 않습니다.');
+    if(m.mustChangePin){
+      $('pinChangeBox').classList.remove('hide');
+      if(!validPin(newPin) || newPin==='0000' || (m.role==='admin' && newPin==='4572')) return toast('초기 PIN을 새 4자리 PIN으로 변경하세요.');
+      await updateDoc(doc(db,'members',id),{pinHash:await hashPin(newPin),mustChangePin:false});
+      m.mustChangePin=false;
+    }
+    state.user=m; localStorage.setItem('mpMemberId',id); $('loginModal').classList.add('hide'); updateAuthUi(); toast('로그인되었습니다.');
+  }
+
+  async function searchSymbols(q){
+    const apiBase = state.settings.apiBase || window.MP_API_BASE || '';
+    if(apiBase){
+      const res = await fetch(`${apiBase.replace(/\/$/,'')}/search?q=${encodeURIComponent(q)}`);
+      if(!res.ok) throw new Error('검색 API 오류');
+      return await res.json();
+    }
+    const demo = [
+      {symbol:'005930.KS',name:'삼성전자',market:'KRX',type:'STOCK',currency:'KRW'}, {symbol:'069500.KS',name:'KODEX 200',market:'KRX',type:'ETF',currency:'KRW'},
+      {symbol:'AAPL',name:'Apple Inc.',market:'NASDAQ',type:'STOCK',currency:'USD'}, {symbol:'SPY',name:'SPDR S&P 500 ETF',market:'NYSEARCA',type:'ETF',currency:'USD'},
+      {symbol:'QQQ',name:'Invesco QQQ Trust',market:'NASDAQ',type:'ETF',currency:'USD'}
+    ];
+    return demo.filter(x => (x.symbol+x.name).toLowerCase().includes(q.toLowerCase()));
+  }
+  async function quote(symbol){
+    const apiBase = state.settings.apiBase || window.MP_API_BASE || '';
+    if(apiBase){
+      const res = await fetch(`${apiBase.replace(/\/$/,'')}/quote?symbol=${encodeURIComponent(symbol)}&start=${state.settings.startDate||''}&end=${state.settings.endDate||''}`);
+      if(!res.ok) throw new Error('가격 API 오류');
+      return await res.json();
+    }
+    const seed = [...symbol].reduce((a,c)=>a+c.charCodeAt(0),0);
+    const startOpen = 10000 + (seed%900)*10; const currentPrice = startOpen * (0.85 + ((seed*17)%45)/100);
+    const prevClose = currentPrice * (0.98 + ((seed*3)%5)/100);
+    return {symbol,startOpen,currentPrice,prevClose,finalClose:isEnded()?currentPrice:null,currency:symbol.endsWith('.KS')?'KRW':'USD',regularMarketTime:nowIso(),fetchedAt:nowIso(),isDemo:true};
+  }
+
+  async function savePick(){
+    if(!state.user) return toast('로그인이 필요합니다.');
+    if(!state.settings.startDate || !state.settings.endDate) return toast('관리자가 투자 기간을 먼저 설정해야 합니다.');
+    if(leagueLocked()) return toast('기간 종료 후에는 종목을 변경할 수 없습니다.');
+    if(!state.selected) return toast('종목/ETF를 검색해서 선택하세요.');
+    const q=await quote(state.selected.symbol);
+    await setDoc(doc(db,'picks',state.user.id), {
+      memberId:state.user.id, memberName:state.user.name, symbol:state.selected.symbol, symbolName:state.selected.name,
+      market:state.selected.market||'', type:state.selected.type||'', currency:q.currency||state.selected.currency||'', memo:$('memo').value||'',
+      startOpen:q.startOpen, currentPrice:q.currentPrice, prevClose:q.prevClose, finalClose:q.finalClose||null,
+      fetchedAt:q.fetchedAt||nowIso(), updatedAt:serverTimestamp()
+    }, {merge:true});
+    await uploadShotIfAny(state.user.id, state.selected.symbol);
+    toast('저장되었습니다.'); setTab('rank');
+  }
+  async function uploadShotIfAny(memberId, symbol){
+    const file=$('shotFile').files[0]; if(!file) return;
+    const path=`shots/${memberId}/${Date.now()}_${file.name}`; const r=ref(storage,path); await uploadBytes(r,file); const url=await getDownloadURL(r);
+    await setDoc(doc(collection(db,'shots')), {memberId,memberName:state.user.name,symbol:symbol||'',url,path,createdAt:serverTimestamp()});
+  }
+  async function refreshOne(p){
+    const q=await quote(p.symbol);
+    await updateDoc(doc(db,'picks',p.id), {startOpen:q.startOpen||p.startOpen,currentPrice:q.currentPrice,prevClose:q.prevClose,finalClose:q.finalClose||p.finalClose||null,currency:q.currency||p.currency,fetchedAt:q.fetchedAt||nowIso(),updatedAt:serverTimestamp()});
+  }
+  async function refreshAll(){
+    if(!state.user) return toast('로그인이 필요합니다.');
+    for(const p of state.picks) await refreshOne(p);
+    await setDoc(doc(db,'settings','league'), {lastFetchedAt:nowIso()}, {merge:true});
+    toast('가격을 갱신했습니다.');
+  }
+  async function freezeRanking(){
+    if(state.user?.role!=='admin') return toast('관리자만 가능합니다.');
+    for(const p of state.picks){ const q=await quote(p.symbol); await updateDoc(doc(db,'picks',p.id), {finalClose:q.finalClose||q.currentPrice, frozenPrice:q.finalClose||q.currentPrice, currentPrice:q.currentPrice, prevClose:q.prevClose, fetchedAt:q.fetchedAt||nowIso()}); }
+    await setDoc(doc(db,'settings','league'), {isFrozen:true, frozenAt:nowIso(), lastFetchedAt:nowIso()}, {merge:true});
+    toast('종료 순위를 고정했습니다.');
+  }
+
+  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{ if(b.dataset.tab==='admin' && state.user?.role!=='admin') return toast('관리자만 접근할 수 있습니다.'); setTab(b.dataset.tab); });
+  $('openLoginBtn').onclick=()=>{$('loginModal').classList.remove('hide')}; $('closeLoginBtn').onclick=()=>{$('loginModal').classList.add('hide')}; $('logoutBtn').onclick=()=>{state.user=null;localStorage.removeItem('mpMemberId');updateAuthUi();toast('로그아웃되었습니다.')}; $('loginBtn').onclick=login;
+  $('initMembersBtn').onclick=initMembers; $('refreshBtn').onclick=refreshAll; $('savePickBtn').onclick=savePick; $('uploadShotBtn').onclick=async()=>{ if(!state.user) return toast('로그인이 필요합니다.'); await uploadShotIfAny(state.user.id, state.selected?.symbol||''); toast('인증샷을 업로드했습니다.'); };
+  $('saveSettingsBtn').onclick=async()=>{ if(state.user?.role!=='admin') return toast('관리자만 가능합니다.'); await setDoc(doc(db,'settings','league'), {startDate:$('startDate').value,endDate:$('endDate').value,title:$('leagueTitle').value||'Money Plus 주식투자 리그',apiBase:$('apiBase').value||'',marketMode:$('marketMode').value,isFrozen:false,updatedAt:serverTimestamp()}, {merge:true}); toast('설정을 저장했습니다.'); };
+  $('freezeBtn').onclick=freezeRanking;
+  $('symbolSearch').oninput=async e=>{ const q=e.target.value.trim(); const box=$('searchResults'); state.selected=null; $('selectedSymbol').value=''; if(q.length<2){box.classList.add('hide');return;} try{ const list=await searchSymbols(q); box.innerHTML=list.map(x=>`<button data-symbol="${x.symbol}" data-name="${x.name}" data-market="${x.market||''}" data-type="${x.type||''}" data-currency="${x.currency||''}"><b>${x.symbol}</b> · ${x.name}<div class="small muted">${x.market||''} ${x.type||''}</div></button>`).join('') || '<button disabled>검색 결과 없음</button>'; box.classList.remove('hide'); }catch(err){toast(err.message);} };
+  $('searchResults').onclick=e=>{ const b=e.target.closest('button[data-symbol]'); if(!b)return; state.selected={symbol:b.dataset.symbol,name:b.dataset.name,market:b.dataset.market,type:b.dataset.type,currency:b.dataset.currency}; $('selectedSymbol').value=`${state.selected.symbol} · ${state.selected.name}`; $('searchResults').classList.add('hide'); };
+  document.body.onclick=async e=>{ const r=e.target.closest('[data-refresh-one]'); if(r){ const p=state.picks.find(x=>x.id===r.dataset.refreshOne); if(p) await refreshOne(p); } const reset=e.target.closest('[data-reset-pin]'); if(reset && state.user?.role==='admin'){ await updateDoc(doc(db,'members',reset.dataset.resetPin), {pinHash:await hashPin('0000'), mustChangePin:true}); toast('PIN을 0000으로 초기화했습니다.'); } };
+
+  await loadOnce(); updateAuthUi(); setTab('rank');
+</script>
+</body>
+</html>
